@@ -5,11 +5,13 @@
 /// - [UmamiQueueInMemory] — in-memory queue, lost on app restart.
 /// - [UmamiQueuePersisted] — SQLite queue, survives app restarts.
 sealed class UmamiQueueConfig {
+  /// Creates a queue configuration.
   const UmamiQueueConfig();
 }
 
 /// No queue — events that fail to send are discarded.
 class UmamiQueueDisabled extends UmamiQueueConfig {
+  /// Creates a disabled queue configuration.
   const UmamiQueueDisabled();
 }
 
@@ -19,6 +21,9 @@ class UmamiQueueInMemory extends UmamiQueueConfig {
   /// Oldest events are dropped when the limit is exceeded.
   final int maxSize;
 
+  /// Creates an in-memory queue configuration.
+  ///
+  /// [maxSize] defaults to 500.
   const UmamiQueueInMemory({this.maxSize = 500});
 }
 
@@ -34,6 +39,9 @@ class UmamiQueuePersisted extends UmamiQueueConfig {
   /// Events older than this duration are dropped during flush.
   final Duration eventTtl;
 
+  /// Creates a persisted queue configuration.
+  ///
+  /// [maxSize] defaults to 500, [eventTtl] defaults to 48 hours.
   const UmamiQueuePersisted({
     this.maxSize = 500,
     this.databasePath,

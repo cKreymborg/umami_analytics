@@ -2,10 +2,12 @@ import 'umami_queue.dart';
 
 /// List-backed event queue. Events are lost on app restart.
 class InMemoryQueue implements UmamiQueue {
+  /// Maximum number of events to keep in the queue.
   final int maxSize;
   final List<QueuedEvent> _events = [];
   int _nextId = 1;
 
+  /// Creates an in-memory queue with the given [maxSize].
   InMemoryQueue({required this.maxSize});
 
   @override

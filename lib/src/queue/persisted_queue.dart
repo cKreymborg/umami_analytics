@@ -7,6 +7,7 @@ import 'umami_queue.dart';
 
 /// SQLite-backed event queue. Events survive app restarts.
 class PersistedQueue implements UmamiQueue {
+  /// Maximum number of events to keep in the queue.
   final int maxSize;
   final Database _db;
 
@@ -20,8 +21,8 @@ class PersistedQueue implements UmamiQueue {
     required int maxSize,
     String? databasePath,
   }) async {
-    final path = databasePath ??
-        p.join(await getDatabasesPath(), 'umami_queue.db');
+    final path =
+        databasePath ?? p.join(await getDatabasesPath(), 'umami_queue.db');
     final db = await openDatabase(
       path,
       version: 1,
@@ -70,8 +71,8 @@ class PersistedQueue implements UmamiQueue {
               id: row['id'] as int,
               payload:
                   jsonDecode(row['payload'] as String) as Map<String, dynamic>,
-              createdAt: DateTime.fromMillisecondsSinceEpoch(
-                  row['created_at'] as int),
+              createdAt:
+                  DateTime.fromMillisecondsSinceEpoch(row['created_at'] as int),
             ))
         .toList();
   }

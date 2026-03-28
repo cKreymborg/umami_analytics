@@ -9,6 +9,7 @@ class QueuedEvent {
   /// When this event was added to the queue.
   final DateTime createdAt;
 
+  /// Creates a queued event with the given [id], [payload], and [createdAt] timestamp.
   QueuedEvent({
     required this.id,
     required this.payload,

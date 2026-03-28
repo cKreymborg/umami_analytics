@@ -28,6 +28,10 @@ class UmamiNavigatorObserver extends NavigatorObserver {
   /// Defaults to [RouteSettings.name].
   final String Function(Route<dynamic> route)? routeNameMapper;
 
+  /// Creates a navigator observer that tracks page views via [analytics].
+  ///
+  /// Optionally provide [routeFilter] to control which routes are tracked,
+  /// and [routeNameMapper] to customise the URL sent to Umami.
   UmamiNavigatorObserver({
     required this.analytics,
     this.routeFilter,
