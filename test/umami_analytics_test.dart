@@ -326,6 +326,43 @@ void main() {
     });
   });
 
+  group('userId', () {
+    test('includes id in payload when userId is provided', () async {
+      mockClient = successClient();
+      analytics = UmamiAnalytics(
+        websiteId: 'wid',
+        endpoint: 'https://example.com/api/send',
+        hostname: 'app',
+        userId: 'user-123',
+        queueConfig: const UmamiQueueDisabled(),
+        httpClient: mockClient,
+      );
+
+      await analytics.trackPageView(url: '/home');
+
+      final body =
+          jsonDecode(capturedRequests.first.body) as Map<String, dynamic>;
+      expect(body['payload']['id'], 'user-123');
+    });
+
+    test('omits id from payload when userId is null', () async {
+      mockClient = successClient();
+      analytics = UmamiAnalytics(
+        websiteId: 'wid',
+        endpoint: 'https://example.com/api/send',
+        hostname: 'app',
+        queueConfig: const UmamiQueueDisabled(),
+        httpClient: mockClient,
+      );
+
+      await analytics.trackPageView(url: '/home');
+
+      final body =
+          jsonDecode(capturedRequests.first.body) as Map<String, dynamic>;
+      expect(body['payload'].containsKey('id'), isFalse);
+    });
+  });
+
   group('platform detection', () {
     test('screen is ios on iOS', () async {
       debugDefaultTargetPlatformOverride = TargetPlatform.iOS;

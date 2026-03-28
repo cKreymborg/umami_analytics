@@ -33,6 +33,7 @@ final umami = UmamiAnalytics(
   websiteId: 'your-website-id',
   endpoint: 'https://your-umami-instance.com/api/send',
   hostname: 'my-flutter-app',
+  userId: 'optional-user-id', // enables stable session tracking across restarts
 );
 ```
 

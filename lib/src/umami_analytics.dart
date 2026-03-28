@@ -25,6 +25,13 @@ class UmamiAnalytics {
   /// Hostname identifier included in every payload.
   final String hostname;
 
+  /// Optional distinct user or session identifier.
+  ///
+  /// When provided, Umami uses this to deterministically derive a session ID
+  /// (`sessionId = uuid(websiteId, userId)`), enabling stable session tracking
+  /// across app restarts regardless of IP or user-agent changes.
+  final String? userId;
+
   /// Queue strategy for offline resilience.
   final UmamiQueueConfig queueConfig;
 
@@ -51,6 +58,7 @@ class UmamiAnalytics {
     required this.websiteId,
     required this.endpoint,
     required this.hostname,
+    this.userId,
     this.queueConfig = const UmamiQueuePersisted(),
     this.enableEventLogging = false,
     this.enableQueueLogging = false,
@@ -106,6 +114,7 @@ class UmamiAnalytics {
       'type': 'event',
       'payload': {
         'website': websiteId,
+        if (userId != null) 'id': userId,
         'url': url,
         'hostname': hostname,
         'language': _language,
