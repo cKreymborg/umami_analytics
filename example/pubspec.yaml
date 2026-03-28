@@ -1,0 +1,13 @@
+name: umami_analytics_example
+description: Example app for umami_analytics package.
+
+publish_to: none
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  umami_analytics:
+    path: ../
