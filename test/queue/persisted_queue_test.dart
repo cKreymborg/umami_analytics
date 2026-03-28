@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:umami_analytics/src/queue/persisted_queue.dart';
@@ -96,15 +98,23 @@ void main() {
     test('events survive queue reopen with same database', () async {
       // Use a file-based temp DB for this test
       final tempPath = '${DateTime.now().millisecondsSinceEpoch}_test.db';
-      var q = await PersistedQueue.open(maxSize: 10, databasePath: tempPath);
-      await q.insert({'persisted': true});
-      await q.close();
+      try {
+        var q = await PersistedQueue.open(maxSize: 10, databasePath: tempPath);
+        await q.insert({'persisted': true});
+        await q.close();
 
-      q = await PersistedQueue.open(maxSize: 10, databasePath: tempPath);
-      final events = await q.getAll();
-      expect(events, hasLength(1));
-      expect(events.first.payload['persisted'], true);
-      await q.close();
+        q = await PersistedQueue.open(maxSize: 10, databasePath: tempPath);
+        final events = await q.getAll();
+        expect(events, hasLength(1));
+        expect(events.first.payload['persisted'], true);
+        await q.close();
+      } finally {
+        // Clean up the temp database file
+        final file = File(tempPath);
+        if (file.existsSync()) {
+          file.deleteSync();
+        }
+      }
     });
   });
 }

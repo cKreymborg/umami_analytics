@@ -38,9 +38,10 @@ class UmamiAnalytics {
   final http.Client _httpClient;
 
   UmamiQueue? _queue;
-  bool _queueInitialized = false;
+  Future<UmamiQueue?>? _queueFuture;
   String? _cacheToken;
   bool _isFlushing = false;
+  Future<void>? _flushFuture;
 
   /// Creates a new Umami analytics client.
   ///
@@ -207,7 +208,8 @@ class UmamiAnalytics {
 
   void _triggerFlush() {
     if (queueConfig is UmamiQueueDisabled) return;
-    unawaited(_backgroundFlush());
+    _flushFuture = _backgroundFlush();
+    unawaited(_flushFuture!);
   }
 
   Future<void> _backgroundFlush() async {
@@ -253,14 +255,18 @@ class UmamiAnalytics {
   ///
   /// Sends all queued events oldest-first. Failed events remain in the queue.
   Future<void> flush() async {
-    _isFlushing = false;
-    await _backgroundFlush();
+    if (_isFlushing && _flushFuture != null) {
+      await _flushFuture;
+    }
+    _flushFuture = _backgroundFlush();
+    await _flushFuture;
   }
 
-  Future<UmamiQueue?> _ensureQueue() async {
-    if (_queueInitialized) return _queue;
-    _queueInitialized = true;
+  Future<UmamiQueue?> _ensureQueue() {
+    return _queueFuture ??= _initQueue();
+  }
 
+  Future<UmamiQueue?> _initQueue() async {
     switch (queueConfig) {
       case UmamiQueueDisabled():
         _queue = null;
