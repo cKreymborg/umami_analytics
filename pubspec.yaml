@@ -3,7 +3,22 @@ description: >-
   A production-quality Flutter package for Umami analytics with offline support,
   automatic page view tracking, and configurable logging.
 version: 0.1.0
-repository: https://github.com/christopherkreymborg/umami_analytics
+repository: https://github.com/cKreymborg/umami_analytics
+issue_tracker: https://github.com/cKreymborg/umami_analytics/issues
+
+topics:
+  - analytics
+  - umami
+  - tracking
+  - privacy
+  - offline
+
+platforms:
+  android:
+  ios:
+  macos:
+  linux:
+  windows:
 
 environment:
   sdk: ^3.5.0
@@ -19,5 +34,5 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
   sqflite_common_ffi: ^2.3.4
