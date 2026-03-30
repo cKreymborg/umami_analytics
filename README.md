@@ -55,6 +55,8 @@ await umami.trackEvent(
 
 ### Automatic page view tracking
 
+Instead of manually calling `trackPageView` on every navigation, you can add `UmamiNavigatorObserver` to your app. It hooks into Flutter's navigation system and automatically tracks page views whenever a route is pushed or replaced. You can optionally filter which routes are tracked and customize how route names are mapped to URLs.
+
 ```dart
 MaterialApp(
   navigatorObservers: [
@@ -68,6 +70,12 @@ MaterialApp(
 ```
 
 ### Queue configuration
+
+If a send fails (e.g. the device is offline), the event can be saved to a queue and retried later. The next successful send automatically triggers a flush of any queued events. There are three modes:
+
+- **Disabled** — events that fail to send are discarded.
+- **In-memory** — failed events are buffered in memory. Fast, but lost on app restart.
+- **Persisted** (default) — failed events are stored in a local SQLite database and survive app restarts. Events older than the configured TTL are automatically dropped during flush.
 
 ```dart
 // No queue (fire and forget)
@@ -100,6 +108,8 @@ final umami = UmamiAnalytics(
 
 ### Logging
 
+Logging is off by default. You can independently enable logging for tracking calls (`enableEventLogging`) and queue operations (`enableQueueLogging`). By default, logs go to `debugPrint`. If you want to route them somewhere else, provide a custom `logger` callback.
+
 ```dart
 final umami = UmamiAnalytics(
   websiteId: 'id',
@@ -128,7 +138,7 @@ await umami.dispose();
 
 ## Contributing
 
-Contributions are welcome! Please [open an issue](https://github.com/cKreymborg/umami_analytics/issues) first before submitting a pull request. See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+Contributions are welcome! If you're a first-time contributor, please [open an issue](https://github.com/cKreymborg/umami_analytics/issues) before submitting a pull request. See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 ## License
 
