@@ -4,7 +4,7 @@ Contributions are welcome! Whether it's a bug report, feature request, or pull r
 
 ## Before you start
 
-Please **open an issue first** before submitting a pull request. This lets us discuss the change, avoid duplicate work, and make sure it fits the direction of the package.
+If you're a first-time contributor, please **open an issue first** before submitting a pull request. This lets us discuss the change, avoid duplicate work, and make sure it fits the direction of the package.
 
 ## Getting started
 

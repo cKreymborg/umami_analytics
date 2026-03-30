@@ -123,6 +123,8 @@ final umami = UmamiAnalytics(
 
 ### Cleanup
 
+Call `dispose()` when you're done with the analytics instance — for example, in your app's `dispose` lifecycle method or before the app exits. This closes the SQLite database (if using a persisted queue) and the underlying HTTP client.
+
 ```dart
 await umami.dispose();
 ```
