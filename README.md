@@ -126,6 +126,10 @@ await umami.dispose();
 | `flush()` | Manually flush the offline queue |
 | `dispose()` | Close the queue database and HTTP client |
 
+## Contributing
+
+Contributions are welcome! Please [open an issue](https://github.com/cKreymborg/umami_analytics/issues) first before submitting a pull request. See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+
 ## License
 
 MIT
