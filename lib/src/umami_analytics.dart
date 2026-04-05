@@ -283,6 +283,7 @@ class UmamiAnalytics {
   /// Manually flush the offline queue.
   ///
   /// Sends all queued events oldest-first. Failed events remain in the queue.
+  /// Returns immediately when [enabled] is false.
   Future<void> flush() async {
     if (!enabled) return;
     if (_isFlushing && _flushFuture != null) {

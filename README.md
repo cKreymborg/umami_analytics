@@ -116,7 +116,7 @@ final umami = UmamiAnalytics(
   websiteId: 'id',
   endpoint: 'https://example.com/api/send',
   hostname: 'app',
-  enabled: !kDebugMode, // only track in release builds
+  enabled: !kDebugMode, // disable in debug mode
   enableEventLogging: true, // still see events in the console
 );
 ```
