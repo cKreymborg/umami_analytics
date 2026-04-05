@@ -1,3 +1,7 @@
+## 0.2.0
+
+- Add `enabled` parameter to `UmamiAnalytics` constructor to suppress HTTP requests while retaining event logging
+
 ## 0.1.0
 
 - Initial release
