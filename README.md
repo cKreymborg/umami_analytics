@@ -8,6 +8,7 @@ A production-quality Flutter package for [Umami](https://umami.is) analytics wit
 - **Offline queue** with three modes: disabled, in-memory, or SQLite-persisted
 - **Automatic page view tracking** with `UmamiNavigatorObserver`
 - **Session continuity** via the `x-umami-cache` token
+- **Enable/disable tracking** — suppress HTTP sends in debug mode while keeping event logging
 - **Configurable logging** with two granularity flags and a pluggable callback
 - **Minimal dependencies** — only `http` and `sqflite`
 
@@ -103,6 +104,20 @@ final umami = UmamiAnalytics(
     maxSize: 500,
     eventTtl: Duration(hours: 48),
   ),
+);
+```
+
+### Disabling tracking
+
+Set `enabled: false` to suppress all HTTP requests while keeping event logging active. This is useful during development to see which events fire without polluting your production analytics.
+
+```dart
+final umami = UmamiAnalytics(
+  websiteId: 'id',
+  endpoint: 'https://example.com/api/send',
+  hostname: 'app',
+  enabled: !kDebugMode, // only track in release builds
+  enableEventLogging: true, // still see events in the console
 );
 ```
 

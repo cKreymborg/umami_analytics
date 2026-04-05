@@ -363,6 +363,112 @@ void main() {
     });
   });
 
+  group('enabled', () {
+    test('does not send HTTP request for trackPageView when false', () async {
+      mockClient = successClient();
+      analytics = UmamiAnalytics(
+        websiteId: 'wid',
+        endpoint: 'https://example.com/api/send',
+        hostname: 'app',
+        enabled: false,
+        queueConfig: const UmamiQueueDisabled(),
+        httpClient: mockClient,
+      );
+
+      await analytics.trackPageView(url: '/home');
+
+      expect(capturedRequests, isEmpty);
+    });
+
+    test('does not send HTTP request for trackEvent when false', () async {
+      mockClient = successClient();
+      analytics = UmamiAnalytics(
+        websiteId: 'wid',
+        endpoint: 'https://example.com/api/send',
+        hostname: 'app',
+        enabled: false,
+        queueConfig: const UmamiQueueDisabled(),
+        httpClient: mockClient,
+      );
+
+      await analytics.trackEvent(name: 'tap');
+
+      expect(capturedRequests, isEmpty);
+    });
+
+    test('still logs events when disabled and enableEventLogging is true',
+        () async {
+      final logs = <String>[];
+      mockClient = successClient();
+      analytics = UmamiAnalytics(
+        websiteId: 'wid',
+        endpoint: 'https://example.com/api/send',
+        hostname: 'app',
+        enabled: false,
+        queueConfig: const UmamiQueueDisabled(),
+        enableEventLogging: true,
+        logger: (level, message) => logs.add('${level.name}: $message'),
+        httpClient: mockClient,
+      );
+
+      await analytics.trackPageView(url: '/home');
+
+      expect(logs, contains(matches(RegExp(r'info: .*Page view.*\/home'))));
+      expect(
+          logs, contains(matches(RegExp(r'debug: .*Tracking disabled.*'))));
+    });
+
+    test('does not enqueue events when disabled', () async {
+      mockClient = failClient();
+      analytics = UmamiAnalytics(
+        websiteId: 'wid',
+        endpoint: 'https://example.com/api/send',
+        hostname: 'app',
+        enabled: false,
+        queueConfig: UmamiQueueInMemory(maxSize: 10),
+        httpClient: mockClient,
+      );
+
+      await analytics.trackPageView(url: '/home');
+      await analytics.trackEvent(name: 'tap');
+
+      // Re-enable would be needed to flush, but since enabled is final
+      // we verify no HTTP requests were made at all (no send, no enqueue)
+      expect(capturedRequests, isEmpty);
+    });
+
+    test('flush is a no-op when disabled', () async {
+      mockClient = successClient();
+      analytics = UmamiAnalytics(
+        websiteId: 'wid',
+        endpoint: 'https://example.com/api/send',
+        hostname: 'app',
+        enabled: false,
+        queueConfig: UmamiQueueInMemory(maxSize: 10),
+        httpClient: mockClient,
+      );
+
+      await analytics.flush();
+
+      expect(capturedRequests, isEmpty);
+    });
+
+    test('sends normally when enabled is true (default)', () async {
+      mockClient = successClient();
+      analytics = UmamiAnalytics(
+        websiteId: 'wid',
+        endpoint: 'https://example.com/api/send',
+        hostname: 'app',
+        queueConfig: const UmamiQueueDisabled(),
+        httpClient: mockClient,
+      );
+
+      await analytics.trackPageView(url: '/home');
+
+      expect(capturedRequests, hasLength(1));
+    });
+  });
+
   group('platform detection', () {
     test('screen is ios on iOS', () async {
       debugDefaultTargetPlatformOverride = TargetPlatform.iOS;

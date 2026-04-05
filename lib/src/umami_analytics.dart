@@ -32,6 +32,13 @@ class UmamiAnalytics {
   /// across app restarts regardless of IP or user-agent changes.
   final String? userId;
 
+  /// When false, tracking calls still log events (if [enableEventLogging] is
+  /// true) but do not send HTTP requests or enqueue events.
+  ///
+  /// Useful for disabling analytics in debug or test builds while keeping
+  /// visibility into which events fire.
+  final bool enabled;
+
   /// Queue strategy for offline resilience.
   final UmamiQueueConfig queueConfig;
 
@@ -59,6 +66,7 @@ class UmamiAnalytics {
     required this.endpoint,
     required this.hostname,
     this.userId,
+    this.enabled = true,
     this.queueConfig = const UmamiQueuePersisted(),
     this.enableEventLogging = false,
     this.enableQueueLogging = false,
@@ -168,6 +176,12 @@ class UmamiAnalytics {
     if (enableEventLogging) {
       _log(UmamiLogLevel.info, 'Page view: $url');
     }
+    if (!enabled) {
+      if (enableEventLogging) {
+        _log(UmamiLogLevel.debug, 'Tracking disabled, event not sent');
+      }
+      return;
+    }
 
     final success = await _send(payload);
     if (success) {
@@ -188,6 +202,12 @@ class UmamiAnalytics {
     final payload = _buildPayload(url: url ?? '', name: name, data: data);
     if (enableEventLogging) {
       _log(UmamiLogLevel.info, 'Event: $name');
+    }
+    if (!enabled) {
+      if (enableEventLogging) {
+        _log(UmamiLogLevel.debug, 'Tracking disabled, event not sent');
+      }
+      return;
     }
 
     final success = await _send(payload);
@@ -264,6 +284,7 @@ class UmamiAnalytics {
   ///
   /// Sends all queued events oldest-first. Failed events remain in the queue.
   Future<void> flush() async {
+    if (!enabled) return;
     if (_isFlushing && _flushFuture != null) {
       await _flushFuture;
     }

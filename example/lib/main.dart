@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:umami_analytics/umami_analytics.dart';
 
@@ -5,6 +6,7 @@ final umami = UmamiAnalytics(
   websiteId: 'your-website-id',
   endpoint: 'https://your-umami-instance.com/api/send',
   hostname: 'umami-analytics-example',
+  enabled: !kDebugMode, // disable sending in debug mode
   queueConfig: UmamiQueueInMemory(maxSize: 100),
   enableEventLogging: true,
 );
